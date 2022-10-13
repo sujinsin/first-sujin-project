@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper"><!--  어디에 뭘 추가해야해? 마이바티스 컨피그에 추가해야해.  -->
+<!--   <cache-ref namespace=""/>경지 워ㅗ -->
+	<select id="login" resultMap="memberResultSet" >
+		select *
+		from member
+<!-- 		where id=#{id} and pwd=#{pwd} and member_status='Y' -->
+		where id=#{id} and member_status='Y'
+	</select><!-- 멤버라고 넘겼지 파라미터 타입 넘기는겡 ㅣㅆ었는데 안받아올거야 . -->
+	<!-- 파라미터 타입은 생략할 수 있다. 마이바티스가 알아서 타입을 인지하기 때문에, 파라미터 타입 없애도 됨. 스프링에서는 없어도 된다. 적어주지 않을거야. .. 
+		버ㅗ전업이 되면서 원래 파라미터 타입을 안써줘도 된다.. 
+	 -->
+	 
+	 <!-- 리절트 타입인가 맵인가? -->
+	 <resultMap type="Member" id="memberResultSet">
+	 	<id column="ID" property="id" />
+	 	<result column="PWD" property="pwd" />
+	 	<result column="NAME" property="name" />
+	 	<result column="NICKNAME" property="nickName" />
+	 	<result column="EMAIL" property="email" />
+	 	<result column="GENDER" property="gender" />
+	 	<result column="AGE" property="age" />
+	 	<result column="PHONE" property="phone" />
+	 	<result column="ADDRESS" property="address" />
+	 	<result column="ENROLL_DATE" property="enrollDate" />
+	 	<result column="UPDATE_DATE" property="updateDate" />
+	 	<result column="MEMBER_STATUS" property="memberStatus" />
+	 </resultMap>
+	 
+	 
+	<insert id="insertMember">
+		insert into member 
+		values(#{id}, #{pwd}, #{name}, #{nickName}, #{email}, #{gender}, #{age}, #{phone}, #{address}, sysdate, sysdate, default)
+	</insert><!-- 대소문자 가림  -->
+	
+	
+	<update id="updateMember">
+		update member 
+		set name = #{name}, nickName = #{nickName}, email = #{email}, 
+		gender = #{gender}, age = #{age}, phone = #{phone}, address = #{address}
+		where id = #{id}
+	</update>
+	
+	<!-- 비밀번호 수정 -->
+      <update id="updatePwd">
+         update member
+         set pwd = #{ newPwd }
+         where id = #{ id }
+      </update>
+      <update id="deleteMember">
+         update member
+         set member_status = 'N'
+         where id = #{ id }
+      </update>
+      
+      <select id="checkIdDup" resultType="_int">
+      	select count(*)
+      	from member
+      	where id = #{id}
+      </select>
+      
+</mapper>
